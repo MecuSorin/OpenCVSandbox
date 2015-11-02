@@ -1,0 +1,97 @@
+#include <opencv\highgui.h>
+#include <opencv\cv.h>
+#include <iostream>
+#include <sstream>
+
+using namespace cv;
+using namespace std;
+
+string intToString(int number){
+
+
+	std::stringstream ss;
+	ss << number;
+	return ss.str();
+}
+
+int main(int argc, char* argv[])
+{
+	bool recording = false;
+	bool startNewRecording = true;
+
+	VideoCapture cap(0); // open the video camera no. 0
+
+	cv:VideoWriter writer;
+	int videoNumber = 1;
+	//char* outputFileTemplate = "out%3d.avi";
+	std::stringstream filename;
+	
+	int fourCC_org_codex = CV_FOURCC('D', 'I','V','3');
+	int fps = 40;
+	cv::Size frameSize(cap.get(CV_CAP_PROP_FRAME_WIDTH), cap.get(CV_CAP_PROP_FRAME_HEIGHT));
+	
+
+	if (!cap.isOpened())  // if not success, exit program
+	{
+		cout << "ERROR INITIALIZING VIDEO CAPTURE" << endl;
+		return -1;
+	}
+
+	char* windowName = "Webcam Feed";
+	namedWindow(windowName,CV_WINDOW_AUTOSIZE); //create a window to display our webcam feed
+
+
+	while (1) {
+		if(startNewRecording == true) {
+			startNewRecording = false;
+			recording = true;
+			videoNumber++;
+			filename.str(std::string());
+			filename <<"out" << setw(3) << setfill('0') << videoNumber<< ".avi";
+			writer = VideoWriter(filename.str(), fourCC_org_codex, fps, frameSize);
+			if(!writer.isOpened())
+			{
+				cout << "CANNOT OPEN FILE FOR WRITE"<<endl;
+				return 1;
+			}
+		}
+
+		Mat frame;
+
+		bool bSuccess = cap.read(frame); // read a new frame from camera feed
+
+		if (!bSuccess) //test if frame successfully read
+		{
+			cout << "ERROR READING FRAME FROM CAMERA FEED" << endl;
+			break;
+		}
+
+		if (recording == true) {
+			writer.write(frame);
+			putText(frame, "REC", Point(10,10), CV_FONT_HERSHEY_PLAIN, 2, Scalar(12, 12, 255));
+		}
+
+		imshow(windowName, frame); //show the frame in "MyVideo" window
+
+		//listen for 10ms for a key to be pressed
+		switch(waitKey(10)){
+
+		case 27:
+			//'esc' has been pressed (ASCII value for 'esc' is 27)
+			//exit program.
+			return 0;
+
+	
+		case 114:
+			recording = true;
+			break;
+		case 110:
+			startNewRecording = true;
+			break;
+		}
+	}
+
+	return 0;
+
+}
+////////////////////////////////////////////////////////////////////////////////////////////
