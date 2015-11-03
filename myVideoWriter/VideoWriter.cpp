@@ -19,8 +19,10 @@ int main(int argc, char* argv[])
 	bool recording = false;
 	bool startNewRecording = true;
 
-	VideoCapture cap(0); // open the video camera no. 0
-
+	VideoCapture cap;
+	cap.open("http://www.livetrafficlondon.com/VideoClips/16/qvc_16_1_2015_11_03_08_04.mp4?version=635821348279637745"); // open the video camera no. 0
+	//cap.open("c:\\Users\\sorin.mecu\\Documents\\Visual Studio 2010\\Projects\\motionTracking\\myVideoWriter\\Debug\\out002.avi"); // open the video camera no. 0
+	//cap.open("bouncingBall.avi");
 	cv:VideoWriter writer;
 	int videoNumber = 1;
 	//char* outputFileTemplate = "out%3d.avi";

@@ -75,6 +75,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ColorFormats.cpp" />
     <ClCompile Include="HSVHolder.cpp" />
     <ClCompile Include="HSVMouseSelector.cpp" />
     <ClCompile Include="multipleObjectTracking.cpp" />
@@ -82,6 +83,7 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColorFormats.h" />
     <ClInclude Include="hsvholder.h" />
     <ClInclude Include="hsvmouseselector.hpp" />
     <ClInclude Include="multipleObjectTracking.h" />

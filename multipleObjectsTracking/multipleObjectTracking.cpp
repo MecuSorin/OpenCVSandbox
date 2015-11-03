@@ -83,6 +83,7 @@ namespace tracking
 		Mat threshold;
 		Mat HSV;
 		vector<HSVHolder> knownColors;
+		ColorFormats formats;
 		if(calibrationMode){
 			//create slider bars for HSV filtering
 			createTrackbars();
@@ -105,22 +106,26 @@ namespace tracking
 			//store image to matrix
 			capture.read(cameraFeed);
 			//convert frame from BGR to HSV colorspace
-			cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+			cvtColor(cameraFeed,HSV, formats.CurrentColorFormatConvertor());
 			hsvMouseSelector.UpdateFrame(&HSV);
 			if(calibrationMode==true){
 				//if in calibration mode, we track objects based on the HSV slider values.
-				cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
 				inRange(HSV, hsv.ToMin(), hsv.ToMax(), threshold);
 				morphOps(threshold);
-				imshow(windowName2,threshold);
 				trackFilteredObject(threshold,HSV,cameraFeed);
+				
+				imshow(windowName1, HSV);
+				imshow(windowName2,threshold);
 			} 
 			else
 			{
+				destroyWindow(windowName1);
+				destroyWindow(windowName2);
+				destroyWindow(trackbarWindowName);
+
 				for(int i=0; i<knownColors.size(); i++)
 				{
 					HSVHolder color = knownColors[i];
-					cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
 					inRange(HSV, color.ToMin(), color.ToMax(), threshold);
 					morphOps(threshold);
 					trackFilteredObject(threshold,HSV,cameraFeed);
@@ -129,7 +134,7 @@ namespace tracking
 
 			//show frames 
 			//imshow(windowName2,threshold);
-
+			putText(cameraFeed, formats.CurrentColorFormat().getText() ,Point(0,430),1,2,Scalar(0,0,255),2);
 			imshow(windowName,cameraFeed);
 			//imshow(windowName1,HSV);
 
@@ -148,9 +153,18 @@ namespace tracking
 				cout << "calibrationmode:" << calibrationMode << endl;
 				break;
 			case 115:
-				for(int i=0; i<knownColors.size(); i++)
+				for(int i=0; i<knownColors.size(); i++){
+					cout<< "Color " << setw(2) << setfill(' ') << i+1 << ":" << endl;
 					cout << knownColors[i].ToString();
+				}
 				break;
+			case 112:
+			case 80:
+				formats.GoToNextColor();
+				break;
+			case 120:
+				knownColors.clear();
+				cout << "Cleared the tracked colors" << endl;
 			}
 		}
 		return 0;

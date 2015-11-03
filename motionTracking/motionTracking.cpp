@@ -107,7 +107,8 @@ int main(){
 	//video capture object.
 	VideoCapture capture;
 	try {
-		capture.open(0);
+		//capture.open(0);
+		capture.open("TrafficCam.avi");
 
 		if(!capture.isOpened()){
 				cout<<"ERROR ACQUIRING VIDEO FEED\n";

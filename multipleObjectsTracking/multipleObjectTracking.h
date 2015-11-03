@@ -9,6 +9,7 @@
 #include "HSVMouseSelector.hpp"
 #include "utils.h"
 #include "TrackedObject.h"
+#include "ColorFormats.h"
 
 using namespace ImageUtils;
 using namespace std;
