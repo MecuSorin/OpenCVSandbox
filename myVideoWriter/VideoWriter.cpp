@@ -17,10 +17,11 @@ string intToString(int number){
 int main(int argc, char* argv[])
 {
 	bool recording = false;
-	bool startNewRecording = true;
-
+	bool startNewRecording = false;
+	bool saveSnapshot = false;
 	VideoCapture cap;
-	cap.open("http://www.livetrafficlondon.com/VideoClips/16/qvc_16_1_2015_11_03_08_04.mp4?version=635821348279637745"); // open the video camera no. 0
+	cap.open(0);
+	//cap.open("http://www.livetrafficlondon.com/VideoClips/16/qvc_16_1_2015_11_03_08_04.mp4?version=635821348279637745"); // open the video camera no. 0
 	//cap.open("c:\\Users\\sorin.mecu\\Documents\\Visual Studio 2010\\Projects\\motionTracking\\myVideoWriter\\Debug\\out002.avi"); // open the video camera no. 0
 	//cap.open("bouncingBall.avi");
 	cv:VideoWriter writer;
@@ -67,6 +68,10 @@ int main(int argc, char* argv[])
 			cout << "ERROR READING FRAME FROM CAMERA FEED" << endl;
 			break;
 		}
+		if( saveSnapshot) {
+			saveSnapshot = false;
+			imwrite("snapshot.png", frame);
+		}			
 
 		if (recording == true) {
 			writer.write(frame);
@@ -89,6 +94,9 @@ int main(int argc, char* argv[])
 			break;
 		case 110:
 			startNewRecording = true;
+			break;
+		case 115:
+			saveSnapshot = true;
 			break;
 		}
 	}
