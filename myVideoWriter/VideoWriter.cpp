@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 	//cap.open("c:\\Users\\sorin.mecu\\Documents\\Visual Studio 2010\\Projects\\motionTracking\\myVideoWriter\\Debug\\out002.avi"); // open the video camera no. 0
 	//cap.open("bouncingBall.avi");
 	cv:VideoWriter writer;
-	int videoNumber = 1;
+	int videoNumber = 0;
 	//char* outputFileTemplate = "out%3d.avi";
 	std::stringstream filename;
 	
@@ -81,21 +81,21 @@ int main(int argc, char* argv[])
 		imshow(windowName, frame); //show the frame in "MyVideo" window
 
 		//listen for 10ms for a key to be pressed
-		switch(waitKey(10)){
+		switch((char)waitKey(10)){
 
-		case 27:
+		case (char)27:
 			//'esc' has been pressed (ASCII value for 'esc' is 27)
 			//exit program.
 			return 0;
 
 	
-		case 114:
-			recording = true;
+		case 'r':
+			recording = !recording;
 			break;
-		case 110:
+		case 'n':
 			startNewRecording = true;
 			break;
-		case 115:
+		case 's':
 			saveSnapshot = true;
 			break;
 		}

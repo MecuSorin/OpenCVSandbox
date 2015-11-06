@@ -10,7 +10,7 @@
 using namespace std;
 using namespace cv;
 
-const string windowNameShowCaptue = "Image feed";
+const string windowNameShowCapture = "Image feed";
 const string face_cascade_name = "haarcascade_frontalface_default.xml";
 const string eyes_cascade_name = "haarcascade_eye.xml";
 const string glasses_file = "glasses.png";
@@ -24,50 +24,54 @@ int doTheStuff(VideoCapture cap)
 	Mat originalGlasses = imread(glasses_file, -1);
 	Mat glasses;
 	vector<Rect> faces;
-	
+
 	CascadeClassifier face_cascade;
 	CascadeClassifier eyes_cascade;
 	if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
 	if( !eyes_cascade.load( eyes_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
-	
+	namedWindow(windowNameShowCapture, CV_WINDOW_AUTOSIZE);
 	for(;;)
 	{
 		bool showImage = false;
-		cap.read(source);
-		cvtColor(source, source_out, CV_BGR2BGRA);
-		cvtColor(source, graySource, CV_BGR2GRAY);
-		equalizeHist(graySource, graySource);
-		face_cascade.detectMultiScale(graySource, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(face_detection_size, face_detection_size));
-		if(1 > faces.size())
+		//cap.read(source);
+		cap >> source;
+		if(!source.empty())
 		{
-			cout << "No face found"<< endl;
-			continue;
-		}
-		for(vector<Rect>::size_type i=0; i< faces.size(); i++)
-		{
-			Mat face = graySource(faces[i]);
-			vector<Rect> eyes;
-			eyes_cascade.detectMultiScale(face, eyes, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30));
-			if(eyes.size() != 2)
+			cvtColor(source, source_out, CV_BGR2BGRA);
+			cvtColor(source, graySource, CV_BGR2GRAY);
+			equalizeHist(graySource, graySource);
+			face_cascade.detectMultiScale(graySource, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(face_detection_size, face_detection_size));
+			if(1 > faces.size())
 			{
-				cout << " missed eyes" << endl;
+				cout << "No face found"<< endl;
 				continue;
 			}
-			vector<Point> allCorners;
-			for(vector<Rect>::size_type e=0; e< eyes.size(); e++)
+			for(vector<Rect>::size_type i=0; i< faces.size(); i++)
 			{
-				allCorners.push_back(eyes[e].tl());
-				allCorners.push_back(eyes[e].br());
+				Mat face = graySource(faces[i]);
+				vector<Rect> eyes;
+				eyes_cascade.detectMultiScale(face, eyes, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30));
+				if(eyes.size() != 2)
+				{
+					cout << " missed eyes" << endl;
+					continue;
+				}
+				vector<Point> allCorners;
+				for(vector<Rect>::size_type e=0; e< eyes.size(); e++)
+				{
+					allCorners.push_back(eyes[e].tl());
+					allCorners.push_back(eyes[e].br());
+				}
+				Rect glassesSize = boundingRect(allCorners);
+				resize(originalGlasses, glasses, glassesSize.size());
+				Rect properCoordinates(faces[i].tl()+glassesSize.tl(), glassesSize.size());
+				Mat sourceEyes = source_out(properCoordinates);
+				overlapImage(sourceEyes, glasses);
+				showImage = true;
 			}
-			Rect glassesSize = boundingRect(allCorners);
-			resize(originalGlasses, glasses, glassesSize.size());
-			Rect properCoordinates(faces[i].tl()+glassesSize.tl(), glassesSize.size());
-			Mat sourceEyes = source_out(properCoordinates);
-			overlapImage(sourceEyes, glasses);
-			showImage = true;
+			if(showImage)
+				imshow(windowNameShowCapture, source_out);
 		}
-		if(showImage)
-			imshow(windowNameShowCaptue, source_out);
 		switch ((char)waitKey(10)) {
 		case 'q':
 		case (char)27:

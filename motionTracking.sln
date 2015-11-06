@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "colorLabTracking", "colorLa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "face", "face\face.vcxproj", "{B43426F9-298D-4756-8F95-F77742C21617}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "faceIdentification", "faceIdentification\faceIdentification.vcxproj", "{07C5F508-A311-42D1-BD6B-9B2012A93E32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -30,9 +32,12 @@ Global
 		{11B99612-B491-4D41-BF4F-59E8250DB26B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{11B99612-B491-4D41-BF4F-59E8250DB26B}.Release|Win32.ActiveCfg = Release|Win32
 		{B43426F9-298D-4756-8F95-F77742C21617}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B43426F9-298D-4756-8F95-F77742C21617}.Debug|Win32.Build.0 = Debug|Win32
 		{B43426F9-298D-4756-8F95-F77742C21617}.Release|Win32.ActiveCfg = Release|Win32
 		{B43426F9-298D-4756-8F95-F77742C21617}.Release|Win32.Build.0 = Release|Win32
+		{07C5F508-A311-42D1-BD6B-9B2012A93E32}.Debug|Win32.ActiveCfg = Debug|Win32
+		{07C5F508-A311-42D1-BD6B-9B2012A93E32}.Debug|Win32.Build.0 = Debug|Win32
+		{07C5F508-A311-42D1-BD6B-9B2012A93E32}.Release|Win32.ActiveCfg = Release|Win32
+		{07C5F508-A311-42D1-BD6B-9B2012A93E32}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
