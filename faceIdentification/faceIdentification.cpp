@@ -5,7 +5,9 @@ const string face_cascade_name = "haarcascade_frontalface_default.xml";
 const string eyes_cascade_name = "haarcascade_eye.xml";
 const string face_recognition_file = "saved_faces.xml";
 const int face_detection_size = 100;
-vector<string> facesVideos = make_vector<string>() << "sabin" << "cristi"  << "sorin" << "tudor";
+const double confidenceThreshold = 54.;
+
+vector<string> facesVideos = make_vector<string>() << "sabin" << "cristi"  << "sorin" << "tudor" << "sorin_standing" << "sorin_sitting";
 
 CascadeClassifier face_cascade;
 CascadeClassifier eyes_cascade;
@@ -41,6 +43,8 @@ Ptr<FaceRecognizer> LearnFaces(vector<string> faceVideos)
 			Mat frame;
 			Mat graySource;
 			vector<Rect> detectedFacesRects;
+			vector<Rect> eyes;
+
 			sourceVideo >> frame;
 			if(frame.empty()) 
 			{
@@ -56,17 +60,13 @@ Ptr<FaceRecognizer> LearnFaces(vector<string> faceVideos)
 				continue;
 			}
 			Mat face = graySource(detectedFacesRects[0]);
-			imshow(windowNameShowCapture, face);
-			cout << face.type();
-			
-			vector<Rect> eyes;
 			eyes_cascade.detectMultiScale(face, eyes, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30));
 			if(eyes.size() != 2)
 			{
 				cout << "!";
 				continue;
 			}
-			
+			cout << ".";	
 			faces.push_back(face);
 			labels.push_back(i);
 		}
@@ -125,7 +125,8 @@ int doTheStuff(VideoCapture cap)
 				{
 					stringstream text;
 					text << facesVideos[predictions[i].first] << " - " << setprecision(3) << predictions[i].second;
-					putText(source, text.str(), faces[i].tl()+Point(0,10), CV_FONT_HERSHEY_PLAIN, 1., Scalar(255,0,0));
+					Scalar color = predictions[i].second>confidenceThreshold ? Scalar(0,0,255) :  Scalar(0,255,0);
+					putText(source, text.str(), faces[i].tl()+Point(0,10), CV_FONT_HERSHEY_PLAIN, 1.7, color);
 				}
 			}
 			imshow(windowNameShowCapture, source);
@@ -135,27 +136,6 @@ int doTheStuff(VideoCapture cap)
 		case (char)27:
 			return 0;
 		}
-	}
-}
-
-void overlapImage(Mat under, Mat upper)
-{
-	//addWeighted(under, .5, upper, 1., 0., under); 
-	try
-	{
-		//assert(under.size == upper	.size);
-		for(int i=0, width = under.rows; i< width; i++)
-			for(int j=0, height = under.cols; j < height; j++)
-			{
-				Vec4b pixel = upper.at<Vec4b>(i,j);
-				if(pixel[3] == 0)
-					continue;
-				under.at<Vec4b>(i,j) = pixel;
-			}
-	}
-	catch(exception ex)
-	{
-		cout << ex.what() << endl;
 	}
 }
 
